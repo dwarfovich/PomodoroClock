@@ -81,6 +81,8 @@ MainWindow::MainWindow (QWidget* parent)
     connect(qApp, &QApplication::aboutToQuit, this, [this]() {
         saveParameters(m_clock->parameters());
     });
+
+    setWindowTitle("Pomodor clock");
 }
 
 MainWindow::~MainWindow () {
@@ -190,7 +192,7 @@ ClockParameters MainWindow::loadParameters () {
     parameters.workTime       = settings.value("work_time", 25 * 60).toInt();
     parameters.shortBreakTime = settings.value("short_break_time", 5 * 60).toInt();
     parameters.longBreakTime  = settings.value("long_break_time", 15 * 60).toInt();
-    parameters.maxShortBreaks = settings.value("max_short_breaks, 4").toInt();
+    parameters.maxShortBreaks = settings.value("max_short_breaks", 4).toInt();
     DEB << parameters.workTime;
 
     return parameters;

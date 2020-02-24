@@ -6,6 +6,9 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
+#include <QDebug>
+#define DEB qDebug()
+
 ParametersDialog::ParametersDialog (QWidget* parent)
     : QDialog{parent} {
     createGui();
@@ -13,17 +16,18 @@ ParametersDialog::ParametersDialog (QWidget* parent)
 
 ClockParameters ParametersDialog::clockParameters () const {
     ClockParameters parameters;
-    parameters.workTime       = m_workTimeSpinbox->value();
-    parameters.shortBreakTime = m_shortBreakSpinbox->value();
-    parameters.longBreakTime  = m_longBreakSpinbox->value();
+    parameters.workTime       = m_workTimeSpinbox->value() * 60;
+    parameters.shortBreakTime = m_shortBreakSpinbox->value() * 60;
+    parameters.longBreakTime  = m_longBreakSpinbox->value() * 60;
     parameters.maxShortBreaks = m_maxShortBreaksSpinbox->value();
     return parameters;
 }
 
 void ParametersDialog::setClockParameters (const ClockParameters& parameters) {
-    m_workTimeSpinbox->setValue(parameters.workTime);
-    m_shortBreakSpinbox->setValue(parameters.shortBreakTime);
-    m_longBreakSpinbox->setValue(parameters.longBreakTime);
+    m_workTimeSpinbox->setValue(parameters.workTime / 60);
+    m_shortBreakSpinbox->setValue(parameters.shortBreakTime / 60);
+    m_longBreakSpinbox->setValue(parameters.longBreakTime / 60);
+    DEB << "ParametersDialog::setClockParameters" << parameters.maxShortBreaks;
     m_maxShortBreaksSpinbox->setValue(parameters.maxShortBreaks);
 }
 
@@ -34,7 +38,7 @@ void ParametersDialog::createGui () {
     auto* label = new QLabel { "Work time", };
     horizontalLayout->addWidget(label);
     m_workTimeSpinbox = new QSpinBox {};
-    m_workTimeSpinbox->setMinimum(1);
+    m_workTimeSpinbox->setRange(1, 60);
     horizontalLayout->addWidget(m_workTimeSpinbox);
     verticalLayout->addLayout(horizontalLayout);
     // Short break
@@ -42,7 +46,7 @@ void ParametersDialog::createGui () {
     label = new QLabel { "Short break", };
     horizontalLayout->addWidget(label);
     m_shortBreakSpinbox = new QSpinBox {};
-    m_shortBreakSpinbox->setMinimum(1);
+    m_shortBreakSpinbox->setRange(1, 60);
     horizontalLayout->addWidget(m_shortBreakSpinbox);
     verticalLayout->addLayout(horizontalLayout);
     // Long break
@@ -50,7 +54,7 @@ void ParametersDialog::createGui () {
     label = new QLabel { "Long break", };
     horizontalLayout->addWidget(label);
     m_longBreakSpinbox = new QSpinBox {};
-    m_longBreakSpinbox->setMinimum(1);
+    m_longBreakSpinbox->setRange(1, 60);
     horizontalLayout->addWidget(m_longBreakSpinbox);
     verticalLayout->addLayout(horizontalLayout);
     // Short breaks count
