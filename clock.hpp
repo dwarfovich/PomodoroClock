@@ -28,6 +28,7 @@ public:
     ClockParameters parameters () const;
     void            setParameters (const ClockParameters& parameters);
     ClockStage      nextStage () const;
+    void            setNextStage (ClockStage stage);
 
 public slots:
     void start (ClockStage stage);

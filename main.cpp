@@ -12,7 +12,10 @@ void logHandler (QtMsgType type, const QMessageLogContext& context, const QStrin
 
 int main (int argc, char* argv[]) {
     qInstallMessageHandler(logHandler);
+    QCoreApplication::setOrganizationName("BooSoft");
+    QCoreApplication::setApplicationName("PomodoroClock");
 
+    QApplication::setQuitOnLastWindowClosed(false);
     QApplication a(argc, argv);
     MainWindow   w;
     w.show();

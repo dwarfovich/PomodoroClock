@@ -75,3 +75,14 @@ void Clock::setParameters (const ClockParameters& parameters) {
 ClockStage Clock::nextStage () const {
     return m_currentStage;
 }
+
+void Clock::setNextStage (ClockStage stage) {
+    m_timer->stop();
+    if (stage == ClockStage::Work) {
+        m_secondsRemains = parameters().workTime;
+    } else if (stage == ClockStage::ShortBreak) {
+        m_secondsRemains = parameters().shortBreakTime;
+    } else if (stage == ClockStage::LongBreak) {
+        m_secondsRemains = parameters().longBreakTime;
+    }
+}

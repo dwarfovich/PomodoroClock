@@ -18,11 +18,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     clock.cpp \
     main.cpp \
-    main_window.cpp
+    main_window.cpp \
+    parameters_dialog.cpp
 
 HEADERS += \
     clock.hpp \
-    main_window.hpp
+    main_window.hpp \
+    parameters_dialog.hpp
 
 FORMS += \
     main_window.ui
@@ -31,3 +33,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    Icon.qrc
