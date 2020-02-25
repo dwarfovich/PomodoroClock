@@ -10,9 +10,6 @@
 #include <QMenuBar>
 #include <QSettings>
 
-#include <QDebug>
-#define DEB qDebug()
-
 MainWindow::MainWindow (QWidget* parent)
     : QMainWindow{parent}
     , m_ui{new Ui::MainWindow}
@@ -21,6 +18,7 @@ MainWindow::MainWindow (QWidget* parent)
     m_ui->setupUi(this);
     m_ui->workButton->setChecked(true);
     m_ui->timeWidget->setFocusPolicy(Qt::NoFocus);
+
     QFont font;
     font.setPixelSize(48);
     m_ui->timeWidget->setFont(font);
@@ -36,31 +34,6 @@ MainWindow::MainWindow (QWidget* parent)
     m_mainMenu->addAction(m_actionQuit);
     m_menuBar->addMenu(m_mainMenu);
     setMenuBar(m_menuBar);
-
-    connect(m_ui->startButton, &QPushButton::clicked, this, &MainWindow::startClock);
-    connect(m_ui->stopButton, &QPushButton::clicked, this, &MainWindow::stopClock);
-    connect(m_ui->workButton, &QPushButton::toggled, this, &MainWindow::buttonChecked);
-    connect(m_ui->shortBreakButton, &QPushButton::toggled, this, &MainWindow::buttonChecked);
-    connect(m_ui->longBreakButton, &QPushButton::toggled, this, &MainWindow::buttonChecked);
-    connect(m_clock, &Clock::secondTimeout, this, &MainWindow::secondTimeout);
-    connect(m_clock, &Clock::stageCompeted, this, &MainWindow::onStageCompleted);
-
-    auto parameters = loadParameters();
-    m_clock->setParameters(parameters);
-    updateTime();
-
-// quitAction = new QAction(tr("&Quit"), this);
-// connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
-
-// minimizeAction = new QAction(tr("Mi&nimize"), this);
-// connect(minimizeAction, &QAction::triggered, this, &QWidget::hide);
-
-// maximizeAction = new QAction(tr("Ma&ximize"), this);
-// connect(maximizeAction, &QAction::triggered, this, &QWidget::showMaximized);
-
-// restoreAction = new QAction(tr("&Restore"), this);
-// connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
-
     m_actionMinimize = new QAction("Minimize", this);
     connect(m_actionMinimize, &QAction::triggered, this, &MainWindow::hide);
 
@@ -77,10 +50,21 @@ MainWindow::MainWindow (QWidget* parent)
     m_trayIcon->show();
     connect(m_trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::trayIconActivated);
 
-// QObject::connect(qApp, &QApplication::aboutToQuit, &mw, &MainWindow::close);
     connect(qApp, &QApplication::aboutToQuit, this, [this]() {
         saveParameters(m_clock->parameters());
     });
+
+    connect(m_ui->startButton, &QPushButton::clicked, this, &MainWindow::startClock);
+    connect(m_ui->stopButton, &QPushButton::clicked, this, &MainWindow::stopClock);
+    connect(m_ui->workButton, &QPushButton::toggled, this, &MainWindow::buttonChecked);
+    connect(m_ui->shortBreakButton, &QPushButton::toggled, this, &MainWindow::buttonChecked);
+    connect(m_ui->longBreakButton, &QPushButton::toggled, this, &MainWindow::buttonChecked);
+    connect(m_clock, &Clock::secondTimeout, this, &MainWindow::secondTimeout);
+    connect(m_clock, &Clock::stageCompeted, this, &MainWindow::onStageCompleted);
+
+    auto parameters = loadParameters();
+    m_clock->setParameters(parameters);
+    updateTime();
 
     setWindowTitle("Pomodor clock");
 }
@@ -95,13 +79,10 @@ void MainWindow::updateTime () {
 }
 
 void MainWindow::closeEvent (QCloseEvent* event) {
-
     if (m_trayIcon->isVisible()) {
         hide();
         event->ignore();
     }
-// saveParameters(m_clock->parameters());
-// event->accept();
 }
 
 void MainWindow::startClock () {
@@ -150,7 +131,6 @@ void MainWindow::secondTimeout () {
 }
 
 void MainWindow::onStageCompleted () {
-// setWindowState(windowState() & (~Qt::WindowMinimized | Qt::WindowActive));
     showNormal();
     stopClock();
 
@@ -186,21 +166,17 @@ void MainWindow::openPropertiesDialog () {
 }
 
 ClockParameters MainWindow::loadParameters () {
-// QSettings       settings { "BooSoft", "PomodoroClock" };
     QSettings       settings;
     ClockParameters parameters;
     parameters.workTime       = settings.value("work_time", 25 * 60).toInt();
     parameters.shortBreakTime = settings.value("short_break_time", 5 * 60).toInt();
     parameters.longBreakTime  = settings.value("long_break_time", 15 * 60).toInt();
     parameters.maxShortBreaks = settings.value("max_short_breaks", 4).toInt();
-    DEB << parameters.workTime;
 
     return parameters;
 }
 
 void MainWindow::saveParameters (const ClockParameters& parameters) {
-// QSettings settings { "BooSoft", "PomodoroClock" };
-    DEB << "Save parameters";
     QSettings settings;
     settings.setValue("work_time", parameters.workTime);
     settings.setValue("short_break_time", parameters.shortBreakTime);

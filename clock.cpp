@@ -1,14 +1,14 @@
 #include "clock.hpp"
 
-#include <QDebug>
-#define DEB qDebug()
+#include <QTimer>
 
 Clock::Clock (QObject* parent)
     : QObject{parent}
-    , m_secondsRemains{m_parameters.workTime}
     , m_timer{new QTimer(this)}
+    , m_secondsRemains{m_parameters.workTime}
+    , m_shortBreaks{0}
     , m_currentStage{ClockStage::Work}
-    , m_shortBreaks{0} {
+    , m_parameters{} {
     connect(m_timer, &QTimer::timeout, this, &Clock::onSecondTimeout);
 }
 

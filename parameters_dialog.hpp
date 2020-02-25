@@ -5,7 +5,9 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QSpinBox;
+QT_END_NAMESPACE
 
 class ParametersDialog : public QDialog {
     Q_OBJECT

@@ -23,6 +23,7 @@ SOURCES += \
 
 HEADERS += \
     clock.hpp \
+    clock_parameters.hpp \
     main_window.hpp \
     parameters_dialog.hpp
 
